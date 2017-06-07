@@ -184,33 +184,33 @@ $(document).ready(function () {
 <tbody>
 <tr class="odd">
 <td><strong>Neural Network (the best model within all NN models)</strong></td>
-<td>0.9246779</td>
-<td>467.39</td>
+<td>0.9260857</td>
+<td>472.45</td>
 </tr>
 <tr class="even">
 <td><strong>Random Search (with GBM algorithm)</strong></td>
-<td>0.9272052</td>
-<td>86.29</td>
+<td>0.9243476</td>
+<td>109.78</td>
 </tr>
 <tr class="odd">
 <td><strong>Ensemble (random forest + GBM + NN)</strong></td>
-<td>0.9317667</td>
-<td>4.05</td>
+<td>0.929771</td>
+<td>2.57</td>
 </tr>
 <tr class="even">
 <td><strong>GBM</strong></td>
-<td>0.9272052</td>
-<td>86.29</td>
+<td>0.9287117</td>
+<td>31.65</td>
 </tr>
 <tr class="odd">
 <td><strong>Random Forest</strong></td>
-<td>0.931621</td>
-<td>160.78</td>
+<td>0.926403</td>
+<td>29.78</td>
 </tr>
 <tr class="even">
 <td><strong>Logistic Regression</strong></td>
 <td>0.9049404</td>
-<td>2.78</td>
+<td>2.79</td>
 </tr>
 </tbody>
 </table>
@@ -424,7 +424,7 @@ $(document).ready(function () {
   md_gbm &lt;- h2o.gbm(x = Xnames, y = &quot;y&quot;, training_frame = dx_train, distribution = &quot;bernoulli&quot;, ntrees = 50, max_depth = 10, learn_rate = 0.1, nbins = 100, seed = 123, nfolds = 5, fold_assignment = &quot;Modulo&quot;, keep_cross_validation_predictions = TRUE)    
 })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.55    0.00   31.65</code></pre>
+##    0.45    0.00   32.44</code></pre>
 <pre class="r"><code>h2o.auc(h2o.performance(md_gbm, dx_test))</code></pre>
 <pre><code>## [1] 0.9287117</code></pre>
 <hr />
@@ -435,7 +435,7 @@ $(document).ready(function () {
   md_rf &lt;- h2o.randomForest(x = Xnames, y = &quot;y&quot;, training_frame = dx_train, ntrees = 50, seed = 123, nfolds = 5, fold_assignment = &quot;Modulo&quot;, keep_cross_validation_predictions = TRUE)
 })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.39    0.01   29.78</code></pre>
+##    0.36    0.00   27.90</code></pre>
 <pre class="r"><code>h2o.auc(h2o.performance(md_rf, dx_test))</code></pre>
 <pre><code>## [1] 0.926403</code></pre>
 <hr />
@@ -450,7 +450,7 @@ $(document).ready(function () {
                 nfolds = 5, fold_assignment = &quot;Modulo&quot;, keep_cross_validation_predictions = TRUE)
 })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.18    0.00    2.79</code></pre>
+##    0.19    0.00    2.54</code></pre>
 <pre class="r"><code>h2o.auc(h2o.performance(md_logistic, dx_test))</code></pre>
 <pre><code>## [1] 0.9049404</code></pre>
 </div>
@@ -460,10 +460,10 @@ $(document).ready(function () {
   md_nn &lt;- h2o.deeplearning(x = Xnames, y = &quot;y&quot;, training_frame = dx_train, activation = &quot;Rectifier&quot;, hidden = c(100,100),adaptive_rate = FALSE, rate = 0.01, rate_annealing = 1e-04,momentum_start = 0.5, momentum_ramp = 1e5, momentum_stable = 0.99, epochs = 100, seed = 123, nfolds = 5, fold_assignment = &quot;Modulo&quot;, keep_cross_validation_predictions = TRUE)
   })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.79    0.00  472.45</code></pre>
+##    0.60    0.06  486.97</code></pre>
 <pre class="r"><code>#AUC
 h2o.performance(md_nn, dx_test)@metrics$AUC</code></pre>
-<pre><code>## [1] 0.9260857</code></pre>
+<pre><code>## [1] 0.9254762</code></pre>
 <hr />
 </div>
 <div id="ensemble-random-forest-gbm-and-neural-network" class="section level4">
@@ -474,23 +474,23 @@ h2o.performance(md_nn, dx_test)@metrics$AUC</code></pre>
 md_ensemble &lt;- h2o.stackedEnsemble(x = Xnames, y = &quot;y&quot;, training_frame = dx_train,base_models = list(md_rf@model_id, md_gbm@model_id, md_nn@model_id))
 })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.13    0.00    2.57</code></pre>
+##    0.05    0.00    1.58</code></pre>
 <p>Check the AUC of Ensemble model</p>
 <pre class="r"><code>h2o.auc(h2o.performance(md_ensemble, dx_test))</code></pre>
-<pre><code>## [1] 0.929771</code></pre>
+<pre><code>## [1] 0.9299291</code></pre>
 <p>Coefficients of ensemble</p>
 <pre class="r"><code>h2o.getModel(md_ensemble@model$metalearner$name)@model$coefficients_table</code></pre>
 <pre><code>## Coefficients: glm coefficients
 ##                                    names coefficients
-## 1                              Intercept    -3.658097
-## 2          DRF_model_R_1496855598197_179     5.728702
-## 3            GBM_model_R_1496855598197_1     1.005508
-## 4 DeepLearning_model_R_1496855598197_440     0.810020
+## 1                              Intercept    -3.658393
+## 2          DRF_model_R_1496859041708_147     5.590083
+## 3            GBM_model_R_1496859041708_1     0.972075
+## 4 DeepLearning_model_R_1496859041708_390     0.961270
 ##   standardized_coefficients
-## 1                 -2.792032
-## 2                  1.127337
-## 3                  0.220698
-## 4                  0.138704</code></pre>
+## 1                 -2.792210
+## 2                  1.100058
+## 3                  0.213360
+## 4                  0.174122</code></pre>
 </div>
 </div>
 <div id="random-search-gbm" class="section level4">
@@ -524,7 +524,7 @@ md_ensemble &lt;- h2o.stackedEnsemble(x = Xnames, y = &quot;y&quot;, training_fr
                   seed = 123)
 })</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.67    0.03  109.78</code></pre>
+##    0.55    0.00   13.73</code></pre>
 <p>Step5: Make prediction and calculate AUC</p>
 <pre class="r"><code>#To sort
 md_rs &lt;- h2o.getGrid(grid_id = &quot;grd&quot;, sort_by = &quot;auc&quot;, decreasing = TRUE)</code></pre>
@@ -533,7 +533,7 @@ md_rs_best &lt;- h2o.getModel(md_rs@model_ids[[1]])</code></pre>
 <pre class="r"><code>#AUC 
 auc_rs &lt;- h2o.auc(h2o.performance(md_rs_best, dx_test))
 auc_rs</code></pre>
-<pre><code>## [1] 0.9243476</code></pre>
+<pre><code>## [1] 0.9235372</code></pre>
 <hr />
 </div>
 </div>
